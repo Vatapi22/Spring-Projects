@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 import com.vatapi.springmvc.entity.Customer;
 
 @Repository
@@ -20,10 +20,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 	public List<Customer> getCustomers() {
 
 		Session session = sessionfactory.getCurrentSession();
-		System.out.println("creating the query");
 		String sql = "from Customer";
 		Query<Customer> query = session.createQuery(sql, Customer.class);
-		System.out.println("query created");
 		List<Customer> cusList = query.getResultList();
 		
 		return cusList;
@@ -36,8 +34,28 @@ public class CustomerDAOImpl implements CustomerDAO {
 		// TODO Auto-generated method stub
 		
 		Session session = sessionfactory.getCurrentSession();
+		session.saveOrUpdate(customer);		
 		
-		session.save(customer);		
+	}
+
+	@Override
+	public Customer getCustomer(int id) {
+		
+		Session session = sessionfactory.getCurrentSession();
+		Customer customer= session.get(Customer.class, id);
+//		if(customer!=null)
+		return customer;
+		
+		
+	}
+
+	@Override
+	public void deleteCustomer(int id) {
+		// TODO Auto-generated method stub
+		Session session = sessionfactory.getCurrentSession();
+		Query query = session.createQuery("delete from Customer where id=:customerId");
+		query.setParameter("customerId", id);
+		query.executeUpdate();
 		
 	}
 
